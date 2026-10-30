@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PinWeb | Quotation Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="controls no-print">
+      <div class="controls-heading">
+        <div class="brand-mini"><img src="assets/logo.png" alt="PinWeb logo" /></div>
+        <div><h1>Quotation Generator</h1><p>Create and print a professional A4 quotation.</p></div>
+      </div>
+      <form id="quotationForm">
+        <h2>Customer Details</h2>
+        <label for="customerName">Customer / Company Name</label>
+        <input id="customerName" type="text" placeholder="e.g. ABC Business Pvt. Ltd." />
+
+        <label for="customerAddress">Address</label>
+        <textarea id="customerAddress" rows="2" placeholder="Enter full address"></textarea>
+
+        <label for="customerMobile">Mobile Number</label>
+        <input id="customerMobile" type="tel" placeholder="+91 XXXXX XXXXX" />
+
+        <div class="two-col">
+          <div><label for="quotationNo">Quotation No.</label><input id="quotationNo" type="text" /></div>
+          <div><label for="quotationDate">Date</label><input id="quotationDate" type="date" /></div>
+        </div>
+
+        <div id="serviceEntries"></div>
+        <button type="button" class="secondary add-service" id="addServiceBtn">+ Add Another Service</button>
+        <template id="serviceTemplate">
+          <section class="service-entry">
+            <div class="service-entry-heading"><strong>Service</strong><button type="button" class="remove-service">Remove</button></div>
+            <label>Service Category</label>
+            <select class="service-type">
+              <option>Website Development</option>
+              <option>Digital Marketing</option>
+              <option>Mobile Application Development</option>
+              <option>School ERP</option>
+              <option>Custom Software Development</option>
+              <option>Branding &amp; Graphic Design</option>
+              <option>Printing Solutions</option>
+              <option>Other Services</option>
+            </select>
+            <label>Service / Project Title</label>
+            <input class="service-title" type="text" placeholder="e.g. Business Website Design" />
+            <label>Service Description</label>
+            <textarea class="service-description" rows="3" placeholder="Describe deliverables, features, scope, etc."></textarea>
+            <div class="two-col">
+              <div><label>Quantity</label><input class="service-quantity" type="number" min="1" value="1" /></div>
+              <div><label>Amount (₹) per unit</label><input class="service-amount" type="number" min="0" step="0.01" value="12000" /></div>
+            </div>
+          </section>
+        </template>
+
+        <label for="validity">Quotation Valid For</label>
+        <select id="validity"><option>7 Days</option><option selected>15 Days</option><option>30 Days</option></select>
+
+        <label for="notes">Additional Notes (optional)</label>
+        <textarea id="notes" rows="2" placeholder="Payment terms, timeline, exclusions..."></textarea>
+
+        <div class="form-actions">
+          <button type="button" class="secondary" id="resetBtn">Reset Form</button>
+          <button type="button" class="primary" id="printBtn">Print A4 Quotation</button>
+        </div>
+        <p class="hint">Tip: Add your company logo as <code>assets/logo.png</code> in this folder.</p>
+      </form>
+    </section>
+
+    <section class="paper-wrap">
+      <article class="quotation" id="quotation">
+        <header class="quote-header">
+          <div class="company-brand">
+            <div class="logo-frame"><img id="companyLogo" src="assets/logo.png" alt="PinWeb logo"></div>
+            <div class="company-name"><div class="pinweb-name">Pin<span>Web</span></div><div class="private-limited">PRIVATE LIMITED</div><div class="tagline">Technology that moves you forward</div></div>
+          </div>
+          <div class="company-contact">
+            <h2>Innovative Software Solutions</h2>
+            <p>Custom Software · Websites · Mobile Apps · Digital Marketing</p>
+            <div class="contact-line"><span class="contact-icon">☎</span> +91 94159 74978</div>
+            <div class="contact-line"><span class="contact-icon">✉</span> contact@pinweb.com</div>
+            <div class="contact-line"><span class="contact-icon">⌖</span> 5th Floor, Tulsaini Grace, Edmonston Road,<br><span class="indent">Civil Lines, Prayagraj, Uttar Pradesh 211001</span></div>
+          </div>
+        </header>
+
+        <div class="quote-banner">
+          <div><h1>QUOTATION</h1><p id="bannerService">Website Development & Digital Solutions</p></div>
+          <div class="banner-right">Ideas into Impact <span>✦</span></div>
+        </div>
+
+        <section class="meta-panel">
+          <div class="meta-left">
+            <div><span>Quotation No.</span><b>:</b><strong id="outQuotationNo">PW/2026/001</strong></div>
+            <div><span>Date</span><b>:</b><strong id="outDate">29 October 2026</strong></div>
+            <div><span>Client Name</span><b>:</b><strong id="outName">Customer / Company Name</strong></div>
+            <div><span>Mobile</span><b>:</b><strong id="outMobile">—</strong></div>
+          </div>
+          <div class="meta-right">
+            <div><span>Service Category</span><b>:</b><strong id="outCategory">Website Development</strong></div>
+            <div><span>Address</span><b>:</b><strong id="outAddress">Customer address will appear here</strong></div>
+            <div><span>Valid For</span><b>:</b><strong id="outValidity">15 Days</strong></div>
+          </div>
+        </section>
+
+        <table class="service-table">
+          <thead><tr><th class="serial">S.No.</th><th>Service Description</th><th class="qty">Qty / Duration</th><th class="amount-col">Amount (₹)</th></tr></thead>
+          <tbody id="outServiceItems"></tbody>
+        </table>
+
+        <section class="bottom-grid">
+          <div class="offer-box">
+            <h3><span>✦</span> Project Notes</h3>
+            <p id="outNotes">We look forward to working with you and bringing your ideas to life.</p>
+            <ul><li>Clear scope and deliverables</li><li>Professional, client-focused service</li><li>Support as agreed in the project scope</li></ul>
+          </div>
+          <div class="totals-box">
+            <div class="total-line"><span>Subtotal</span><strong id="outSubtotal">₹ 12,000.00</strong></div>
+            <div class="total-line"><span>Taxes</span><strong>Extra, if applicable</strong></div>
+            <div class="grand-total"><span>Total Quotation Amount</span><strong id="outTotal">₹ 12,000.00</strong></div>
+            <p class="tax-note">GST extra, if applicable</p>
+          </div>
+        </section>
+
+        <section class="terms-sign">
+          <div class="terms">
+            <h3><span>▤</span> Terms & Conditions</h3>
+            <ol>
+              <li>Work will begin after scope confirmation and advance payment, if applicable.</li>
+              <li>Timeline depends on project scope and receipt of required content.</li>
+              <li>Any additional features or work outside the agreed scope may cost extra.</li>
+              <li>Third-party, hosting, domain, advertising and subscription fees are excluded unless mentioned.</li>
+              <li>Quotation validity: <span id="outValidityTerms">15 Days</span> from the quotation date.</li>
+            </ol>
+          </div>
+          <div class="signature">
+            <p>For <strong>PinWeb Private Limited</strong></p>
+            <div class="signature-space"></div>
+            <div class="sign-line"></div>
+            <strong>Authorized Signatory</strong>
+          </div>
+        </section>
+
+        <footer class="quote-footer">
+          <div class="footer-slogan">Let's Build<br><em>Your Digital Future</em></div>
+          <div class="footer-service"><span>▣</span> Website &<br>Software</div>
+          <div class="footer-service"><span>◉</span> Digital<br>Marketing</div>
+          <div class="footer-service"><span>✧</span> Mobile<br>Applications</div>
+          <div class="footer-service"><span>⌘</span> School<br>ERP</div>
+        </footer>
+      </article>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
